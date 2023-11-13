@@ -35,9 +35,11 @@ public abstract class HttpHeaders {
         return header;
     }
 
+    
     @SuppressWarnings("unchecked")
     public static Entry<String, String> createHeader(String headerName, String headerValue) {
-        @SuppressWarnings("unchecked")
+    
+        @SuppressWarnings("rawtypes")
         SimpleEntry header = new SimpleEntry(headerName, headerValue);
 
         return header;

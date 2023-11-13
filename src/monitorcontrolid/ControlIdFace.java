@@ -28,7 +28,7 @@ public final class ControlIdFace {
     private final JSONParser parser = new JSONParser();
     private JSONObject jsonObject = null;
     private final String IDACCESS_IP = (String) jCatraca().get("ip");
-    private final int IDACCESS_PORT = Integer.parseInt((String) jCatraca().get("ipPorta"));
+    private final int IDACCESS_PORT = Integer.parseInt((String) jCatraca().get("ipPorta")); //PORTA DO HTTP DO CONTROLID PADRÃO É 80
     private String session;
 
     public boolean session() {
@@ -322,6 +322,32 @@ public final class ControlIdFace {
             if (httpURLConnection.getResponseCode() != 200) {
                 InputStreamUtils.inputStreamToString(httpURLConnection.getErrorStream());
 
+            }
+
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void monitor(String ip, String port) {
+
+        Map<String, String> headers = HttpHeaders.newEmptyHeaders();
+        HttpHeaders.addHeader(headers, HttpHeaders.createContentTypeHeader("application/json"));
+
+        JsonObject monitor = new JsonObject();
+        monitor.addProperty("request_timeout", "5000");
+        monitor.addProperty("hostname", ip);
+        monitor.addProperty("port", port);
+
+        JsonObject body = new JsonObject();
+        body.add("monitor", monitor);
+
+        HttpURLConnection httpURLConnection
+                = HttpConnectionUtils.post(this.IDACCESS_IP, this.IDACCESS_PORT, "set_configuration.fcgi?session=" + this.session, headers, null, body.toString().getBytes());
+
+        try {
+            if (httpURLConnection.getResponseCode() != 200) {
+                InputStreamUtils.inputStreamToString(httpURLConnection.getErrorStream());
             }
 
         } catch (IOException e) {
